@@ -1,0 +1,20 @@
+name: Update travel news
+on:
+  schedule:
+    - cron: '7 */2 * * *'
+  workflow_dispatch:
+  push:
+    paths: ['scripts/news.py', '.github/workflows/news.yml']
+permissions:
+  contents: write
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/news.py
+      - run: |
+          git config user.name "TripKhojo bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/news.json
+          git diff --cached --quiet || (git commit -m "Update travel news" && git push)
