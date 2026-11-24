@@ -518,7 +518,7 @@ class Component extends DCLogic {
     }
     const shareText = pd ? 'TripKhojo spun the world for me: ' + pd.name + ' — about ' + fmt(this.cost(pd, s.from).total) + ' per person for ' + pd.days + ' days from ' + from.name + '. Spin yours on TripKhojo!' : '';
     const modeDefs = [['explore','The Living Globe'],['budget','Budget Magic'],['surprise','Surprise Me']];
-    const go = m => { if (m === 'budget') this.budgetView(s.budget); if (m === 'explore') { this.g.target = null; this.g.tZoom = 1; } if (m === 'surprise') { this.g.target = { lon:80, lat:15, zoom:1 }; }
+    const go = m => { if (m === 'surprise') { window.location.href = 'surprise.html'; return; } if (m === 'budget') this.budgetView(s.budget); if (m === 'explore') { this.g.target = null; this.g.tZoom = 1; } if (m === 'surprise') { this.g.target = { lon:80, lat:15, zoom:1 }; }
       this.setState({ mode:m, sel:null, bSel:null, spin:'idle' }); };
     return {
       cv:this.cv, globeAria:'Interactive globe showing TripKhojo destinations and routes from ' + from.name + '. Use the destination buttons to choose a place.',
