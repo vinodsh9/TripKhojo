@@ -1,0 +1,41 @@
+{
+ "updated": "2026-11-25T07:05:17.641017+00:00",
+ "inr_per_unit": {
+  "USD": 92.37,
+  "EUR": 101.0158,
+  "GBP": 120.7922,
+  "AED": 25.169,
+  "THB": 2.7086,
+  "SGD": 71.476,
+  "IDR": 0.005,
+  "VND": 0.0036,
+  "MYR": 22.409,
+  "JPY": 0.5794,
+  "AUD": 60.7702,
+  "CAD": 64.605,
+  "CHF": 110.4316,
+  "MVR": 6.021992315937805,
+  "LKR": 0.2792417024026235,
+  "NPR": 0.625,
+  "SAR": 24.78191911181602
+ },
+ "source": {
+  "USD": "market",
+  "EUR": "market",
+  "GBP": "market",
+  "AED": "market",
+  "THB": "market",
+  "SGD": "market",
+  "IDR": "market",
+  "VND": "market",
+  "MYR": "market",
+  "JPY": "market",
+  "AUD": "market",
+  "CAD": "market",
+  "CHF": "market",
+  "MVR": "daily",
+  "LKR": "daily",
+  "NPR": "daily",
+  "SAR": "daily"
+ }
+}
