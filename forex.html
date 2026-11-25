@@ -65,7 +65,7 @@ footer{margin-top:40px;padding:22px 0 30px;border-top:1px solid rgba(255,255,255
 <div class="tip"><b>Always pay in local currency</b><p>If a card machine offers to charge you in rupees, say no. Paying in the local currency is usually cheaper.</p></div>
 <div class="tip"><b>Check visa rules officially</b><p>Visa and entry rules change often. Confirm them on the country's official website or the Indian embassy page before you book.</p></div>
 </div>
-<footer>© 2026 TripKhojo · Operated by [OWNER NAME – to be confirmed] · Prototype.<br>Exchange rates: ExchangeRate-API (open.er-api.com), updated once a day; indicative only, not an offer to buy or sell currency. Travel updates: headlines from Google News, updated automatically every 2 hours; each links to the original publisher. TripKhojo does not write or verify these stories.</footer>
+<footer>© 2026 TripKhojo · Operated by [OWNER NAME – to be confirmed] · Prototype.<br>Exchange rates: live market rates (Yahoo Finance), refreshed every 4 hours, with ExchangeRate-API as backup; indicative only, not an offer to buy or sell currency. Travel updates: headlines from Google News, updated automatically every 2 hours; each links to the original publisher. TripKhojo does not write or verify these stories.</footer>
 </div>
 <script>
 const CUR=[['INR','Indian Rupee','🇮🇳'],['USD','US Dollar','🇺🇸'],['EUR','Euro','🇪🇺'],['GBP','British Pound','🇬🇧'],['AED','UAE Dirham','🇦🇪'],['THB','Thai Baht','🇹🇭'],['SGD','Singapore Dollar','🇸🇬'],['IDR','Indonesian Rupiah','🇮🇩'],['MVR','Maldivian Rufiyaa','🇲🇻'],['VND','Vietnamese Dong','🇻🇳'],['MYR','Malaysian Ringgit','🇲🇾'],['LKR','Sri Lankan Rupee','🇱🇰'],['NPR','Nepalese Rupee','🇳🇵'],['JPY','Japanese Yen','🇯🇵'],['AUD','Australian Dollar','🇦🇺'],['CAD','Canadian Dollar','🇨🇦'],['CHF','Swiss Franc','🇨🇭'],['SAR','Saudi Riyal','🇸🇦']];
@@ -76,10 +76,13 @@ function calc(){if(!R)return;const a=parseFloat($('amt').value)||0,f=$('fc').val
  $('ov').textContent=nf(v,t);$('ol').textContent=nf(a,f)+' is about';$('or').textContent='1 '+f+' = '+nf(R[t]/R[f],t)}
 ['amt','fc','tc'].forEach(i=>$(i).addEventListener('input',calc));
 $('sw').onclick=()=>{const f=$('fc').value;$('fc').value=$('tc').value;$('tc').value=f;calc()};
-fetch('https://open.er-api.com/v6/latest/INR').then(r=>r.json()).then(d=>{if(d.result!=='success')throw 0;R=d.rates;R.INR=1;
- const dt=new Date(d.time_last_update_unix*1000);$('upd').textContent='Rates updated '+dt.toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})+'. Next update '+new Date(d.time_next_update_unix*1000).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})+'.';
- $('tb').innerHTML=CUR.slice(1).filter(c=>R[c[0]]).map(c=>'<tr><td>'+c[2]+' <strong>'+c[0]+'</strong> <small>'+c[1]+'</small></td><td><strong>₹'+(1/R[c[0]]).toLocaleString('en-IN',{maximumFractionDigits:(1/R[c[0]])<1?4:2})+'</strong></td></tr>').join('');calc()})
- .catch(()=>{$('live').style.display='none';$('upd').textContent='Live rates could not load right now. Please refresh in a minute.';$('tb').innerHTML='<tr><td colspan="2" class="muted">Rates unavailable right now.</td></tr>'});
+const fdt=d=>d.toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+function useRates(inr,when){R={INR:1};Object.keys(inr).forEach(k=>R[k]=1/inr[k]);
+ $('upd').textContent='Rates updated '+fdt(when)+'. They refresh every 4 hours.';
+ $('tb').innerHTML=CUR.slice(1).filter(c=>R[c[0]]).map(c=>'<tr><td>'+c[2]+' <strong>'+c[0]+'</strong> <small>'+c[1]+'</small></td><td><strong>₹'+(1/R[c[0]]).toLocaleString('en-IN',{maximumFractionDigits:(1/R[c[0]])<1?4:2})+'</strong></td></tr>').join('');calc()}
+function fail(){$('live').style.display='none';$('upd').textContent='Live rates could not load right now. Please refresh in a minute.';$('tb').innerHTML='<tr><td colspan="2" class="muted">Rates unavailable right now.</td></tr>'}
+fetch('data/rates.json?'+Date.now()).then(r=>r.json()).then(d=>{if(!d.inr_per_unit)throw 0;useRates(d.inr_per_unit,new Date(d.updated))})
+ .catch(()=>fetch('https://open.er-api.com/v6/latest/INR').then(r=>r.json()).then(d=>{if(d.result!=='success')throw 0;const inr={};Object.keys(d.rates).forEach(k=>inr[k]=1/d.rates[k]);useRates(inr,new Date(d.time_last_update_unix*1000))}).catch(fail));
 let N=null,K='trending';
 function show(){const L=(N&&N[K])||[];if(!L.length){$('news').innerHTML='<p class="muted">'+(N?'No updates right now. Please check back soon.':'Updates could not load right now.')+'</p>';return}
  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
